@@ -37,7 +37,7 @@ functions.cloudEvent('helloPubSub', async (cloudEvent) => {
     expirationTime.setMinutes(expirationTime.getMinutes() + 2); // Set expiration time to 2 minutes from now
 
     // const verificationLink = `http://f23cloud.me:3000/v1/user/verify?token=${verificationToken}`;
-    const verificationLink = `http://${process.env.LINK}/v1/user/verify?token=${verificationToken}`;
+    const verificationLink = `https://${process.env.LINK}/v1/user/verify?token=${verificationToken}`;
 
     const mailOptions = {
       from: 'no-reply@f23cloud.me',
