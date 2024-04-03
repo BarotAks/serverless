@@ -1,9 +1,10 @@
 const { PubSub } = require('@google-cloud/pubsub');
 const functions = require('@google-cloud/functions-framework');
-const mailgun = require('mailgun-js')({
-    apiKey: '516c85648c378e36f8e48b908239f8f2-30b58138-6cbb07b9',
-    domain: 'f23cloud.me', // Replace with your Mailgun domain
-});
+const mailgun = require('mailgun-js');
+// const mailgun = require('mailgun-js')({
+//     apiKey: '516c85648c378e36f8e48b908239f8f2-30b58138-6cbb07b9',
+//     domain: 'f23cloud.me', // Replace with your Mailgun domain
+// });
 const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
 
@@ -18,6 +19,11 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,
 });
 
+const mg = mailgun({
+  apiKey: process.env.MAILGUN_API_KEY,
+  domain: process.env.MAILGUN_DOMAIN,
+});
+
 functions.cloudEvent('helloPubSub', async (cloudEvent) => {
   try {
     const pubsubMessage = cloudEvent.data.message;
@@ -30,7 +36,8 @@ functions.cloudEvent('helloPubSub', async (cloudEvent) => {
     const expirationTime = new Date();
     expirationTime.setMinutes(expirationTime.getMinutes() + 2); // Set expiration time to 2 minutes from now
 
-    const verificationLink = `http://f23cloud.me:3000/v1/user/verify?token=${verificationToken}`;
+    // const verificationLink = `http://f23cloud.me:3000/v1/user/verify?token=${verificationToken}`;
+    const verificationLink = `http://${process.env.LINK}/v1/user/verify?token=${verificationToken}`;
 
     const mailOptions = {
       from: 'no-reply@f23cloud.me',
@@ -40,7 +47,7 @@ functions.cloudEvent('helloPubSub', async (cloudEvent) => {
     };
 
     try {
-      const [results] = await mailgun.messages().send(mailOptions);
+      const [results] = await mg.messages().send(mailOptions);
       console.log(`Email sent to ${username}: ${results.message}`);
 
       // Update user's verificationEmailSentAt column
