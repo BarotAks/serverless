@@ -1,10 +1,6 @@
 const { PubSub } = require('@google-cloud/pubsub');
 const functions = require('@google-cloud/functions-framework');
 const mailgun = require('mailgun-js');
-// const mailgun = require('mailgun-js')({
-//     apiKey: '516c85648c378e36f8e48b908239f8f2-30b58138-6cbb07b9',
-//     domain: 'f23cloud.me', // Replace with your Mailgun domain
-// });
 const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
 
@@ -36,8 +32,7 @@ functions.cloudEvent('helloPubSub', async (cloudEvent) => {
     const expirationTime = new Date();
     expirationTime.setMinutes(expirationTime.getMinutes() + 2); // Set expiration time to 2 minutes from now
 
-    // const verificationLink = `http://f23cloud.me:3000/v1/user/verify?token=${verificationToken}`;
-    const verificationLink = `https://${process.env.LINK}/v1/user/verify?token=${verificationToken}`;
+    const verificationLink = `https://${process.env.LINK}/user/verify?token=${verificationToken}`;
 
     const mailOptions = {
       from: 'no-reply@f23cloud.me',
